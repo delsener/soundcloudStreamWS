@@ -29,24 +29,20 @@ var oauth2_code = null;
  * @param {Function} callback(error, data)
  * @return {Request}
  */
-sc.get = function(path, params, callback) {
-	log.info('current access token: ' + oauth2_token);
-	call('GET', path, oauth2_token, params, callback);
+sc.get = function(path, params, callback, access_token) {
+	call('GET', path, access_token, params, callback);
 }
 
-sc.post = function(path, params, callback) {
-	oauthLogin();
-	call('POST', path, oauth2_token, callback);
+sc.post = function(path, params, callback, access_token) {
+	call('POST', path, access_token, callback);
 }
 
-sc.put = function(path, params, callback) {
-	oauthLogin();
-	call('PUT', path, oauth2_token, params, callback);
+sc.put = function(path, params, callback, access_token) {
+	call('PUT', path, access_token, params, callback);
 }
 
-sc.delete = function(path, params, callback) {
-	oauthLogin();
-	call('DELETE', path, oauth2_token, params, callback);
+sc.delete = function(path, params, callback, access_token) {
+	call('DELETE', path, access_token, params, callback);
 }
 
 sc.getSoundcloudConnectURL = function(callback) {
@@ -80,7 +76,8 @@ function call (method, path, access_token, params, callback) {
 		}
 		callback = callback || function() {};
 		params = params || {};
-		params.oauth_token = access_token;
+		log.info('current access token: ' + access_token.access_token);
+		params.oauth_token = access_token.access_token;
 		params.format = 'json';
 		return request({method: method, uri: host_api, path: path, qs: params}, callback);
 	}
